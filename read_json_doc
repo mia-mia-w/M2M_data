@@ -1,0 +1,9 @@
+import os.path
+import read_json
+
+rootdir = r"/Users/yaqinwang/Desktop/CITYESCAPE/final"
+
+for parent, dirnames, filenames in os.walk(rootdir):
+    for filename in filenames:
+        path = os.path.join(parent, filename)
+        read_json.resolveJson(path)
