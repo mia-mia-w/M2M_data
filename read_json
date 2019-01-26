@@ -1,0 +1,52 @@
+import json
+import pandas as pd
+import csv
+import numpy as np
+
+path = "/Users/yaqinwang/PycharmProjects/M2M_Data/aachen_000000_000019_gtFine_polygons.json"
+
+def resolveJson(path):
+    file = open(path, "rb")
+    fileJson = json.load(file)
+    result = fileJson["objects"]
+    # return (objects)
+
+    # result = resolveJson(path)
+    lst1 = []
+    lst2 = []
+
+    for x_mean in range(len(result) - 1):
+        if result[x_mean]["label"] == "car" or result[x_mean]["label"] == "truck" or result[x_mean]["label"] == "bus" or \
+                result[x_mean]["label"] == "caravan" or result[x_mean]["label"] == "trailer":
+            lst1.append(result[x_mean]['label'])
+            lst2.append(result[x_mean]['polygon'])
+
+        if result[x_mean]["label"] == "person" or result[x_mean]["label"] == "bicycle":
+            lst1.append(result[x_mean]['label'])
+            lst2.append(result[x_mean]['polygon'])
+
+        if result[x_mean]["label"] == "motocycle":
+            lst1.append(result[x_mean]['label'])
+            lst2.append(result[x_mean]['polygon'])
+
+
+
+    x_axis = []
+    y_axis = []
+
+    for x in range(len(lst2)):
+        x_sum = 0
+        y_sum = 0
+        x_mean = 0
+        y_mean = 0
+        for y in range(len(lst2[x])):
+            x_sum += lst2[x][y][0]
+            y_sum += lst2[x][y][1]
+            x_mean = x_sum / len(lst2[x])
+            y_mean = y_sum / len(lst2[x])
+
+        x_axis.append(round(x_mean, 2))
+        y_axis.append(round(y_mean, 2))
+
+    dataframe = pd.DataFrame({'category': lst1, 'x_axis': x_axis, 'y_axis': y_axis})
+    dataframe.to_csv("test.csv", index=False, sep=',', header=None, mode='a+')
